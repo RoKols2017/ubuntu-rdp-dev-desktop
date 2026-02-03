@@ -42,20 +42,43 @@ apt-get install -y xrdp
 log_info "Добавление пользователя xrdp в группу ssl-cert..."
 adduser xrdp ssl-cert
 
-# --- Настройка сессии ---
-log_info "Настройка запуска cinnamon-session в xrdp..."
-STARTWM_FILE="/etc/xrdp/startwm.sh"
-if [ ! -f "$STARTWM_FILE" ]; then
-  log_error "Файл не найден: $STARTWM_FILE"
-  exit 1
+# --- Группы video/render для доступа к GPU в RDP-сессии (устраняет "failed to take device /dev/dri") ---
+RDP_USER="${SUDO_USER:-}"
+if [ -n "$RDP_USER" ]; then
+  for g in video render; do
+    if getent group "$g" >/dev/null 2>&1; then
+      usermod -aG "$g" "$RDP_USER" 2>/dev/null && log_info "Пользователь $RDP_USER добавлен в группу $g." || true
+    fi
+  done
+  log_info "Для применения групп video/render перезайдите в RDP или перезагрузите систему."
+else
+  log_warn "SUDO_USER не задан. Добавьте пользователя RDP в группы video и render: usermod -aG video,render <user>"
 fi
 
-if ! grep -q "exec cinnamon-session" "$STARTWM_FILE"; then
-  sed -i.bak '/^test -x \/etc\/X11\/Xsession && \/etc\/X11\/Xsession/i exec cinnamon-session' "$STARTWM_FILE"
-  log_info "Добавлен запуск cinnamon-session."
-else
-  log_info "Запуск cinnamon-session уже настроен."
+# --- Пользовательский .xsession для RDP (устраняет "Oh no! Something has gone wrong") ---
+if [ -n "$RDP_USER" ]; then
+  RDP_HOME="$(getent passwd "$RDP_USER" | cut -d: -f6)"
+  if [ -n "$RDP_HOME" ] && [ -d "$RDP_HOME" ]; then
+    XSESSION_FILE="$RDP_HOME/.xsession"
+    cat <<'XSESSION_EOF' > "$XSESSION_FILE"
+#!/bin/sh
+# Сессия Cinnamon для xrdp (обход Xsession — устраняет падение при RDP)
+[ -r /etc/profile ] && . /etc/profile
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"
+export XDG_SESSION_TYPE=x11
+export GDK_BACKEND=x11
+exec cinnamon-session
+XSESSION_EOF
+    chmod 755 "$XSESSION_FILE"
+    chown "$RDP_USER:$RDP_USER" "$XSESSION_FILE"
+    log_info "Создан $XSESSION_FILE для пользователя $RDP_USER."
+  else
+    log_warn "Домашний каталог пользователя $RDP_USER не найден, .xsession не создан."
+  fi
 fi
+
+# --- startwm.sh не меняем: Xsession сам запустит ~/.xsession пользователя ---
+log_info "Старт сессии по RDP идёт через ~/.xsession (cinnamon-session)."
 
 # --- Служба xrdp ---
 log_info "Включение и перезапуск службы xrdp..."

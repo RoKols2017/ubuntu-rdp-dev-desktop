@@ -39,6 +39,15 @@ log_info "ROLE: 01-gui-cinnamon"
 log_info "Установка Cinnamon и X.org..."
 apt-get install -y cinnamon-desktop-environment xorg
 
+# --- Дисплей-менеджер LightDM (избегаем конфликта GDM с Cinnamon на ноутбуках) ---
+log_info "Установка LightDM для сессии Cinnamon..."
+apt-get install -y lightdm
+# Переключаем на LightDM по умолчанию (устраняет "Oh no! Something has gone wrong" с GDM)
+if command -v update-alternatives >/dev/null 2>&1; then
+  update-alternatives --set x-display-manager /usr/sbin/lightdm 2>/dev/null || true
+fi
+log_info "LightDM установлен как дисплей-менеджер по умолчанию."
+
 # --- PolicyKit правило для RDP ---
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 POLKIT_RULE_SOURCE="$SCRIPT_DIR/files/02-allow-colord.rules"

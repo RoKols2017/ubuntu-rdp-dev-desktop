@@ -85,3 +85,7 @@ sudo bash ./roles/03-desktop-ux/install.sh
 ### Официальные источники
 
 - https://manpages.ubuntu.com/manpages/noble/en/man8/sudo.8.html
+
+## Устранение неполадок
+
+**После перезагрузки экран «Oh no! Something has gone wrong» или RDP не подключается** — (1) Конфликт GDM с Cinnamon: зайдите в консоль (Ctrl+Alt+F3), выполните `sudo apt install -y lightdm`, `sudo update-alternatives --set x-display-manager /usr/sbin/lightdm`, `sudo reboot`. (2) Ошибка при входе по RDP: нужен файл `~/.xsession` с запуском Cinnamon — см. раздел «Устранение неполадок» в [roles/02-remote-access/README.md](roles/02-remote-access/README.md). Подробнее по GUI — [roles/01-gui-cinnamon/README.md](roles/01-gui-cinnamon/README.md).
