@@ -62,12 +62,13 @@ if [ -n "$RDP_USER" ]; then
     XSESSION_FILE="$RDP_HOME/.xsession"
     cat <<'XSESSION_EOF' > "$XSESSION_FILE"
 #!/bin/sh
-# Сессия Cinnamon для xrdp (обход Xsession — устраняет падение при RDP)
+# Сессия Cinnamon для xrdp: панель, меню, иконки на рабочем столе
 [ -r /etc/profile ] && . /etc/profile
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
 export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
-exec cinnamon-session
+# dbus-run-session нужен для панели и значков рабочего стола (nemo)
+exec dbus-run-session -- cinnamon-session
 XSESSION_EOF
     chmod 755 "$XSESSION_FILE"
     chown "$RDP_USER:$RDP_USER" "$XSESSION_FILE"
