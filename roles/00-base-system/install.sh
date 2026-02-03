@@ -50,4 +50,20 @@ apt-get install -y git curl wget htop unzip ca-certificates software-properties-
 log_info "Настройка локали en_US.UTF-8..."
 localectl set-locale LANG=en_US.UTF-8
 
+# --- Отключение спящего режима (ноутбуки и мини ПК) ---
+log_info "Отключение спящего режима и гибернации..."
+mkdir -p /etc/systemd/logind.conf.d
+cat <<'EOF' > /etc/systemd/logind.conf.d/99-no-sleep.conf
+[Login]
+HandleLidSwitch=ignore
+HandleLidSwitchDocked=ignore
+IdleAction=ignore
+IdleActionSec=0
+EOF
+
+# Маски целей, чтобы система не уходила в сон по запросу
+for t in sleep suspend hibernate hybrid-sleep; do
+  systemctl mask "${t}.target" 2>/dev/null || true
+done
+
 log_info "ROLE: 00-base-system - COMPLETE"
