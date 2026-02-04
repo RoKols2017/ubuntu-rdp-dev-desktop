@@ -67,12 +67,12 @@ if [ -n "$RDP_USER" ]; then
     XSESSION_FILE="$RDP_HOME/.xsession"
     cat <<'XSESSION_EOF' > "$XSESSION_FILE"
 #!/bin/sh
-# Сессия MATE для xrdp
+# Сессия MATE для xrdp (dbus-run-session устраняет "Could not acquire name on session bus")
 [ -r /etc/profile ] && . /etc/profile
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
 export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
-exec mate-session
+exec dbus-run-session -- mate-session
 XSESSION_EOF
     chmod 755 "$XSESSION_FILE"
     chown "$RDP_USER:$RDP_USER" "$XSESSION_FILE"
@@ -82,7 +82,7 @@ XSESSION_EOF
   fi
 fi
 
-log_info "Старт сессии по RDP идёт через ~/.xsession (mate-session)."
+log_info "Старт сессии по RDP идёт через ~/.xsession (dbus-run-session -- mate-session)."
 
 # --- Служба xrdp ---
 log_info "Включение и перезапуск службы xrdp..."

@@ -21,7 +21,7 @@
 
 1. **Установка `xrdp`:** устанавливает пакет `xrdp`.
 2. **Настройка прав:** пользователь `xrdp` — в группу `ssl-cert`; пользователь, запускающий скрипт (`SUDO_USER`), — в группы `video`, `render` (GPU) и `netdev` (NetworkManager).
-3. **Сессия по RDP:** создаётся `~/.xsession` пользователя с запуском `mate-session`. При входе по RDP вызывается `/etc/X11/Xsession`, он выполняет `~/.xsession`.
+3. **Сессия по RDP:** создаётся `~/.xsession` пользователя с запуском `dbus-run-session -- mate-session` (D-Bus сессии нужен, иначе «Could not acquire name on session bus» и чёрный экран). При входе по RDP вызывается `/etc/X11/Xsession`, он выполняет `~/.xsession`.
 4. **Служба:** включает автозагрузку и перезапускает `xrdp`.
 
 ### Официальные источники
@@ -57,6 +57,8 @@ AUTO_CONFIRM=1 sudo bash ./roles/02-remote-access/install.sh
 
 Это значит, что RDP-сессия не получила доступ к GPU и работает на программном рендеринге. Чтобы попытаться получить доступ к GPU, пользователь должен быть в группах `video` и `render` (роль добавляет его при запуске через `sudo` от этого пользователя). После добавления в группы нужен новый вход по RDP или перезагрузка.
 
+**«Could not acquire name on session bus» и после OK чёрный экран** — в `~/.xsession` должен быть запуск через `dbus-run-session -- mate-session`, а не просто `mate-session`. Перезапустите роль или исправьте файл вручную (см. блок ниже).
+
 **По RDP видны только обои, нет меню и значков на рабочем столе** — проверьте наличие файла `~/.xsession`:
 
 ```bash
@@ -64,14 +66,14 @@ ls -l ~/.xsession
 cat ~/.xsession
 ```
 
-Файл должен содержать:
+Файл должен содержать (обязательно `dbus-run-session`, иначе «Could not acquire name on session bus» и чёрный экран):
 ```bash
 #!/bin/sh
 [ -r /etc/profile ] && . /etc/profile
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
 export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
-exec mate-session
+exec dbus-run-session -- mate-session
 ```
 
 Если файл отсутствует или неправильный, перезапустите роль:

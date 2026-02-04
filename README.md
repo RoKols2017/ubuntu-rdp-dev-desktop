@@ -96,7 +96,9 @@ sudo update-alternatives --set x-display-manager /usr/sbin/lightdm
 sudo reboot
 ```
 
-**По RDP только обои без меню/значков** — проверьте наличие файла `~/.xsession` с содержимым `exec mate-session`. Подробнее см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md).
+**По RDP: «Could not acquire name on session bus» и чёрный экран** — в `~/.xsession` должен быть `exec dbus-run-session -- mate-session`. Перезапустите роль: `sudo bash ./roles/02-remote-access/install.sh`, затем переподключитесь по RDP.
+
+**По RDP только обои без меню/значков** — проверьте наличие файла `~/.xsession` с содержимым `exec dbus-run-session -- mate-session`. Подробнее см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md).
 
 **Локальный вход: пароль не принимается** — проверьте раскладку и Fn; для теста можно задать простой пароль:
 
