@@ -1,12 +1,12 @@
-# Role: 01-gui-cinnamon
+# Role: 01-gui-mate
 
 ## Назначение
 
-Установка графического окружения Cinnamon и X.org, а также фикса PolicyKit для RDP.
+Установка графического окружения MATE Desktop и X.org для Ubuntu Server 24.04 LTS.
 
 ### Официальные источники
 
-- https://projects.linuxmint.com/cinnamon/
+- https://ubuntu-mate.org/
 - https://packages.ubuntu.com/
 
 ## Зависимости
@@ -19,13 +19,12 @@
 
 ## Действия
 
-1. **Установка пакетов:** `cinnamon-desktop-environment` и `xorg`.
-2. **LightDM:** установка и переключение на LightDM по умолчанию (избегает ошибки «Oh no! Something has gone wrong» при конфликте GDM с Cinnamon на ноутбуках).
-3. **Применение фикса для RDP:** копирует правило PolicyKit `02-allow-colord.rules` в `/etc/polkit-1/rules.d/`.
+1. **Установка пакетов:** `ubuntu-mate-core` (легковесная версия MATE) и `xorg`.
+2. **LightDM:** установка и переключение на LightDM по умолчанию (лучше работает с RDP).
 
 ### Официальные источники
 
-- https://www.freedesktop.org/wiki/Software/polkit/
+- https://ubuntu-mate.org/
 - https://packages.ubuntu.com/
 
 ## Запуск
@@ -35,13 +34,13 @@
 Пример (интерактивно):
 
 ```bash
-sudo bash ./roles/01-gui-cinnamon/install.sh
+sudo bash ./roles/01-gui-mate/install.sh
 ```
 
 Пример (без подтверждений):
 
 ```bash
-AUTO_CONFIRM=1 sudo bash ./roles/01-gui-cinnamon/install.sh
+AUTO_CONFIRM=1 sudo bash ./roles/01-gui-mate/install.sh
 ```
 
 ### Официальные источники
@@ -50,7 +49,7 @@ AUTO_CONFIRM=1 sudo bash ./roles/01-gui-cinnamon/install.sh
 
 ## Устранение неполадок
 
-Если после перезагрузки на экране «Oh no! Something has gone wrong» или RDP не подключается:
+Если после перезагрузки графический интерфейс не запускается:
 
 1. Перезагрузитесь в консоль (другой TTY: Ctrl+Alt+F3) или восстановление.
 2. Войдите под пользователем и выполните:
@@ -61,4 +60,4 @@ sudo update-alternatives --set x-display-manager /usr/sbin/lightdm
 sudo reboot
 ```
 
-После перезагрузки должен запускаться LightDM и сессия Cinnamon.
+После перезагрузки должен запускаться LightDM и сессия MATE.

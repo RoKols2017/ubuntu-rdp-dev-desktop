@@ -49,7 +49,7 @@ fi
 confirm_action "Продолжить установку (GUI, RDP, раскладка, Cursor)?"
 
 AUTO_CONFIRM=1 bash "$ROLES_DIR/00-base-system/install.sh"
-AUTO_CONFIRM=1 bash "$ROLES_DIR/01-gui-cinnamon/install.sh"
+AUTO_CONFIRM=1 bash "$ROLES_DIR/01-gui-mate/install.sh"
 AUTO_CONFIRM=1 bash "$ROLES_DIR/02-remote-access/install.sh"
 AUTO_CONFIRM=1 bash "$ROLES_DIR/03-desktop-ux/install.sh"
 AUTO_CONFIRM=1 bash "$ROLES_DIR/10-ide-cursor/install.sh"

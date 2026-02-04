@@ -16,8 +16,8 @@
 ## Принятые решения
 
 - Локаль системы: `en_US.UTF-8` (для совместимости dev-инструментов)
-- GUI: Cinnamon Desktop
-- RDP: xrdp, запуск `cinnamon-session`
+- GUI: MATE Desktop
+- RDP: xrdp, запуск `mate-session`
 - Раскладка: `setxkbmap -layout us,ru -option grp:ctrl_shift_toggle`
 - Cursor: установка официального `.deb` с `cursor.com`
 
@@ -25,7 +25,7 @@
 
 - https://manpages.ubuntu.com/manpages/noble/en/man1/localectl.1.html
 - https://manpages.ubuntu.com/manpages/noble/en/man1/setxkbmap.1.html
-- https://projects.linuxmint.com/cinnamon/
+- https://ubuntu-mate.org/
 - https://github.com/neutrinolabs/xrdp
 - https://cursor.com/downloads
 

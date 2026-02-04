@@ -12,7 +12,7 @@
 
 Запускает роли по порядку:
 1. `00-base-system`
-2. `01-gui-cinnamon`
+2. `01-gui-mate`
 3. `02-remote-access`
 4. `03-desktop-ux`
 5. `10-ide-cursor`
@@ -38,7 +38,7 @@ AUTO_CONFIRM=1 sudo bash ./use-cases/full-rdp-dev-desktop.sh
 ### Официальные источники
 
 - https://ubuntu.com/server/docs
-- https://projects.linuxmint.com/cinnamon/
+- https://ubuntu-mate.org/
 - https://github.com/neutrinolabs/xrdp
 - https://cursor.com/downloads
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Role: 02-remote-access
-# Description: Installs and configures xrdp to work with Cinnamon.
+# Description: Installs and configures xrdp to work with MATE Desktop.
 
 set -euo pipefail
 
@@ -31,7 +31,7 @@ confirm_action() {
 }
 
 require_root
-confirm_action "Установить и настроить RDP (xrdp) для Cinnamon?"
+confirm_action "Установить и настроить RDP (xrdp) для MATE?"
 
 log_info "ROLE: 02-remote-access"
 
@@ -42,33 +42,37 @@ apt-get install -y xrdp
 log_info "Добавление пользователя xrdp в группу ssl-cert..."
 adduser xrdp ssl-cert
 
-# --- Группы video/render для доступа к GPU в RDP-сессии (устраняет "failed to take device /dev/dri") ---
+# --- Группы для RDP-сессии ---
 RDP_USER="${SUDO_USER:-}"
 if [ -n "$RDP_USER" ]; then
+  # video/render для GPU
   for g in video render; do
     if getent group "$g" >/dev/null 2>&1; then
       usermod -aG "$g" "$RDP_USER" 2>/dev/null && log_info "Пользователь $RDP_USER добавлен в группу $g." || true
     fi
   done
-  log_info "Для применения групп video/render перезайдите в RDP или перезагрузите систему."
+  # netdev для NetworkManager (Wi‑Fi без пароля)
+  if getent group netdev >/dev/null 2>&1; then
+    usermod -aG netdev "$RDP_USER" 2>/dev/null && log_info "Пользователь $RDP_USER добавлен в группу netdev." || true
+  fi
+  log_info "Для применения групп перезайдите в RDP или перезагрузите систему."
 else
-  log_warn "SUDO_USER не задан. Добавьте пользователя RDP в группы video и render: usermod -aG video,render <user>"
+  log_warn "SUDO_USER не задан. Добавьте пользователя RDP в группы video,render,netdev: usermod -aG video,render,netdev <user>"
 fi
 
-# --- Пользовательский .xsession для RDP (устраняет "Oh no! Something has gone wrong") ---
+# --- Пользовательский .xsession для RDP ---
 if [ -n "$RDP_USER" ]; then
   RDP_HOME="$(getent passwd "$RDP_USER" | cut -d: -f6)"
   if [ -n "$RDP_HOME" ] && [ -d "$RDP_HOME" ]; then
     XSESSION_FILE="$RDP_HOME/.xsession"
     cat <<'XSESSION_EOF' > "$XSESSION_FILE"
 #!/bin/sh
-# Сессия Cinnamon для xrdp: панель, меню, иконки на рабочем столе
+# Сессия MATE для xrdp
 [ -r /etc/profile ] && . /etc/profile
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
 export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
-# dbus-run-session нужен для панели и значков рабочего стола (nemo)
-exec dbus-run-session -- cinnamon-session
+exec mate-session
 XSESSION_EOF
     chmod 755 "$XSESSION_FILE"
     chown "$RDP_USER:$RDP_USER" "$XSESSION_FILE"
@@ -78,8 +82,7 @@ XSESSION_EOF
   fi
 fi
 
-# --- startwm.sh не меняем: Xsession сам запустит ~/.xsession пользователя ---
-log_info "Старт сессии по RDP идёт через ~/.xsession (cinnamon-session)."
+log_info "Старт сессии по RDP идёт через ~/.xsession (mate-session)."
 
 # --- Служба xrdp ---
 log_info "Включение и перезапуск службы xrdp..."

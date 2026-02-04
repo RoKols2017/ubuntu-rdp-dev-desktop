@@ -4,7 +4,7 @@
 
 ## Цель
 
-- Графический интерфейс Cinnamon
+- Графический интерфейс MATE Desktop
 - RDP-доступ с Windows
 - Раскладка `us/ru` с переключением `Ctrl+Shift`
 - IDE Cursor для разработки
@@ -12,7 +12,7 @@
 ### Официальные источники
 
 - https://ubuntu.com/server/docs
-- https://projects.linuxmint.com/cinnamon/
+- https://ubuntu-mate.org/
 - https://github.com/neutrinolabs/xrdp
 - https://cursor.com/downloads
 - https://manpages.ubuntu.com/manpages/noble/en/man1/setxkbmap.1.html
@@ -34,7 +34,7 @@
 | Роль | Описание |
 |------|----------|
 | **00-base-system** | Базовая настройка: обновление, утилиты, локаль en_US.UTF-8 |
-| **01-gui-cinnamon** | Графическая оболочка Cinnamon + X.org |
+| **01-gui-mate** | Графическая оболочка MATE Desktop + X.org |
 | **02-remote-access** | RDP-доступ через xrdp |
 | **03-desktop-ux** | UX: шрифты Fira Code, раскладка us/ru (Ctrl+Shift), Firefox |
 | **04-security-hardening** | Усиление безопасности системы |
@@ -88,4 +88,4 @@ sudo bash ./roles/03-desktop-ux/install.sh
 
 ## Устранение неполадок
 
-**После перезагрузки экран «Oh no! Something has gone wrong» или RDP не подключается** — (1) Конфликт GDM с Cinnamon: зайдите в консоль (Ctrl+Alt+F3), выполните `sudo apt install -y lightdm`, `sudo update-alternatives --set x-display-manager /usr/sbin/lightdm`, `sudo reboot`. (2) Ошибка при входе по RDP или по RDP только обои без меню/значков: нужен `~/.xsession` с `dbus-run-session -- cinnamon-session` — см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md). (3) Локальный вход: пароль не принимается — проверьте раскладку и Fn; для теста можно задать простой пароль: `sudo passwd <user>`.
+**После перезагрузки графический интерфейс не запускается** — зайдите в консоль (Ctrl+Alt+F3), выполните `sudo apt install -y lightdm`, `sudo update-alternatives --set x-display-manager /usr/sbin/lightdm`, `sudo reboot`. **По RDP только обои без меню/значков** — проверьте наличие файла `~/.xsession` с содержимым `exec mate-session` — см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md). **Локальный вход: пароль не принимается** — проверьте раскладку и Fn; для теста можно задать простой пароль: `sudo passwd <user>`.
