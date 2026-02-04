@@ -88,4 +88,18 @@ sudo bash ./roles/03-desktop-ux/install.sh
 
 ## Устранение неполадок
 
-**После перезагрузки графический интерфейс не запускается** — зайдите в консоль (Ctrl+Alt+F3), выполните `sudo apt install -y lightdm`, `sudo update-alternatives --set x-display-manager /usr/sbin/lightdm`, `sudo reboot`. **По RDP только обои без меню/значков** — проверьте наличие файла `~/.xsession` с содержимым `exec mate-session` — см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md). **Локальный вход: пароль не принимается** — проверьте раскладку и Fn; для теста можно задать простой пароль: `sudo passwd <user>`.
+**После перезагрузки графический интерфейс не запускается** — зайдите в консоль (Ctrl+Alt+F3), выполните:
+
+```bash
+sudo apt install -y lightdm
+sudo update-alternatives --set x-display-manager /usr/sbin/lightdm
+sudo reboot
+```
+
+**По RDP только обои без меню/значков** — проверьте наличие файла `~/.xsession` с содержимым `exec mate-session`. Подробнее см. [roles/02-remote-access/README.md](roles/02-remote-access/README.md).
+
+**Локальный вход: пароль не принимается** — проверьте раскладку и Fn; для теста можно задать простой пароль:
+
+```bash
+sudo passwd <user>
+```
