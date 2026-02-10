@@ -31,11 +31,11 @@
 ### 5. roles/02-remote-access/README.md
 - ✅ Упоминает MATE Desktop
 - ✅ Зависимость от `01-gui-mate` указана корректно
-- ✅ Описание `.xsession` с `mate-session` соответствует коду
+- ✅ Описание `.xsession` с `dbus-run-session -- mate-session` соответствует коду
 - ✅ Инструкции по устранению неполадок актуальны
 
 ### 6. roles/02-remote-access/install.sh
-- ✅ Создает `.xsession` с `exec mate-session`
+- ✅ Создает `.xsession` с `exec dbus-run-session -- mate-session`
 - ✅ Нет упоминаний PolicyKit правил
 - ✅ Нет ссылок на удаленные файлы патчей
 - ✅ Упрощенная конфигурация соответствует документации

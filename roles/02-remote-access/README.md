@@ -85,8 +85,8 @@ sudo bash ./roles/02-remote-access/install.sh
 
 ```bash
 # Под пользователем root или по SSH
-sudo passwd roman
+sudo passwd <user>
 # Введите новый пароль дважды (только латиница/цифры, например test123)
 ```
 
-После проверки входа смените пароль на более надёжный: `passwd` от имени пользователя или `sudo passwd roman`.
+После проверки входа смените пароль на более надёжный: `passwd` от имени пользователя или `sudo passwd <user>`.

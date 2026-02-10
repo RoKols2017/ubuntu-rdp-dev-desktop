@@ -48,7 +48,26 @@ apt-get install -y git curl wget htop unzip ca-certificates software-properties-
 
 # --- Локаль ---
 log_info "Настройка локали en_US.UTF-8..."
-localectl set-locale LANG=en_US.UTF-8
+if command -v locale-gen >/dev/null 2>&1; then
+  locale-gen en_US.UTF-8 || true
+fi
+
+if command -v localectl >/dev/null 2>&1; then
+  if ! localectl set-locale LANG=en_US.UTF-8; then
+    log_warn "localectl не сработал, пробую update-locale..."
+    if command -v update-locale >/dev/null 2>&1; then
+      update-locale LANG=en_US.UTF-8
+    else
+      log_error "Не найдено ни одного инструмента для установки локали (localectl/update-locale)."
+      exit 1
+    fi
+  fi
+elif command -v update-locale >/dev/null 2>&1; then
+  update-locale LANG=en_US.UTF-8
+else
+  log_error "Не найдено ни одного инструмента для установки локали (localectl/update-locale)."
+  exit 1
+fi
 
 # --- Отключение спящего режима (ноутбуки и мини ПК) ---
 log_info "Отключение спящего режима и гибернации..."

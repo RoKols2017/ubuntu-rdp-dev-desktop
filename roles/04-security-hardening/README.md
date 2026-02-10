@@ -15,7 +15,7 @@
 2. **Автообновления:** создается `/etc/apt/apt.conf.d/20auto-upgrades`.
 3. **UFW:** deny incoming, allow outgoing, разрешены SSH (limit) и RDP (3389).
 4. **SSH hardening:** `PermitRootLogin no`, перезапуск SSH.
-5. **Fail2Ban:** `jail.local` для `sshd` и `xrdp`.
+5. **Fail2Ban:** `jail.local` для `sshd`; `xrdp`-jail добавляется автоматически, если установлен `xrdp` и доступен фильтр `xrdp.conf`.
 
 ### Официальные источники
 

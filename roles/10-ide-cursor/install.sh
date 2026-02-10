@@ -35,6 +35,12 @@ confirm_action "Установить IDE Cursor?"
 
 log_info "ROLE: 10-ide-cursor"
 
+CURSOR_DEB="$(mktemp /tmp/cursor.XXXXXX.deb)"
+cleanup() {
+  rm -f "$CURSOR_DEB"
+}
+trap cleanup EXIT
+
 # --- Проверка wget ---
 if ! command -v wget >/dev/null 2>&1; then
   log_info "wget не найден. Установка wget..."
@@ -44,16 +50,15 @@ fi
 
 # --- Установка Cursor ---
 log_info "Скачивание Cursor IDE..."
-if wget --timeout=60 "https://cursor.com/download/linux-deb-x64" -O /tmp/cursor.deb; then
-  if [ -s /tmp/cursor.deb ]; then
-    if apt-get install -y /tmp/cursor.deb; then
+if wget --https-only --tries=3 --timeout=60 "https://cursor.com/download/linux-deb-x64" -O "$CURSOR_DEB"; then
+  if [ -s "$CURSOR_DEB" ] && dpkg-deb --info "$CURSOR_DEB" >/dev/null 2>&1; then
+    if apt-get install -y "$CURSOR_DEB"; then
       log_info "Cursor IDE установлен успешно."
     else
       log_warn "Установка Cursor IDE завершилась ошибкой."
     fi
-    rm -f /tmp/cursor.deb
   else
-    log_warn "Скачанный файл пустой. Сервер может быть временно недоступен."
+    log_warn "Скачанный файл не является валидным .deb или пустой."
     log_warn "Попробуйте установить вручную: https://cursor.com/downloads"
   fi
 else

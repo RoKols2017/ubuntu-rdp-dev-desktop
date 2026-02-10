@@ -74,7 +74,7 @@ export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
 exec dbus-run-session -- mate-session
 XSESSION_EOF
-    chmod 755 "$XSESSION_FILE"
+    chmod 700 "$XSESSION_FILE"
     chown "$RDP_USER:$RDP_USER" "$XSESSION_FILE"
     log_info "Создан $XSESSION_FILE для пользователя $RDP_USER."
   else
