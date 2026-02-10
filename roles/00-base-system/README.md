@@ -13,7 +13,7 @@
 
 1. **Обновление пакетов:** выполняет `apt-get update` и `apt-get upgrade`.
 2. **Установка утилит:** `git`, `curl`, `wget`, `htop`, `unzip`, `ca-certificates`, `software-properties-common`.
-3. **Настройка локали:** `localectl set-locale LANG=en_US.UTF-8`.
+3. **Настройка локали:** генерирует `en_US.UTF-8`, затем пытается применить через `localectl set-locale LANG=en_US.UTF-8`; при недоступности/ошибке `localectl` использует fallback `update-locale LANG=en_US.UTF-8`.
 4. **Отключение спящего режима:** настройка logind (`/etc/systemd/logind.conf.d/99-no-sleep.conf`) — игнор простого простоя и закрытия крышки; маски целей `sleep`, `suspend`, `hibernate`, `hybrid-sleep` (удобно для ноутбуков и мини ПК как рабочая станция).
 
 ### Официальные источники
